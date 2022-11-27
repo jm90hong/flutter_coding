@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_coding/config/my_app.dart';
+import 'package:flutter_coding/screen/page/add_todo_page.dart';
+import 'package:flutter_coding/screen/page/todo_list_page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -8,56 +11,50 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+
+  List<Widget> pageList =[
+    TodoListPage(),
+    AddTodoPage(),
+    AddTodoPage()
+  ];
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
-        child: Container(
-          width: double.infinity,
-          height: double.infinity,
-          child: Column(
-            children: [
-              const SizedBox(height: 24,),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        Text('안녕!',style: TextStyle(fontFamily: 'noto_black',fontSize: 20),),
-                        Text('나의 코딩공부 리스트',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black87),)
-                      ],
-                    ),
-                    ClipRRect(
-                        borderRadius: BorderRadius.circular(15),
-                        child: Image.asset('assets/image/my.jpg',width: 60,height: 60,fit: BoxFit.cover,)
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  children: [
-
-                  ],
-                ),
-              )
-            ],
-          ),
+        child: IndexedStack(
+          index: 0,
+          children: pageList,
         ),
+
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: '홈',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add),
+            label: '공부추가',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline_rounded),
+            label: '나의정보',
+          ),
+        ],
+        currentIndex: 0,
+        selectedItemColor: appMainColor,
+        onTap: (index){
+
+        },
       ),
     );
   }
 }
 
 
-class TodoListBox extends StatelessWidget {
-  const TodoListBox({Key? key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
-}

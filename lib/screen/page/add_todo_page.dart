@@ -1,6 +1,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_coding/config/my_app.dart';
+import 'package:flutter_coding/provider/todo_provider.dart';
+import 'package:provider/provider.dart';
+
+import '../../vo/todo.dart';
 
 
 class AddTodoPage extends StatefulWidget {
@@ -15,6 +19,9 @@ class _AddTodoPageState extends State<AddTodoPage> {
   final List<String> valueList = ['플러터','스프링','서버구축','데이터베이스'];
   late String selectedValue;
   final TextStyle ts = TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.bold);
+
+  TextEditingController textEditingController = TextEditingController();
+
 
   @override
   void initState() {
@@ -54,6 +61,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
                   Container(
                       width: 250,
                       child: TextFormField(
+                        controller: textEditingController,
                         decoration: InputDecoration(
                             hintText: '플러터 기초 공부'
                         ),
@@ -63,8 +71,16 @@ class _AddTodoPageState extends State<AddTodoPage> {
               )
           ),
           GestureDetector(
-            onTap: (){
+            onTap: () async{
+              Todo todo = Todo(
+                title: textEditingController.text,
+                type: selectedValue
+              );
 
+              await Provider.of<TodoProvider>(context,listen: false).add(todo: todo);
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text("공부일정 등록완료"),
+              ));
             },
             child: Container(
               color: appMainColor,

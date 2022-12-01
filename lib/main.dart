@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_coding/config/my_app.dart';
+import 'package:flutter_coding/provider/todo_provider.dart';
 import 'package:flutter_coding/screen/home_screen.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,7 +20,13 @@ class MyApp extends StatelessWidget {
         fontFamily: 'noto',
         primaryColor: appMainColor,
       ),
-      home: HomeScreen(),
+      home: MultiProvider(
+          providers: [
+            ChangeNotifierProvider(
+                create: (BuildContext context) => TodoProvider())
+          ],
+          child: HomeScreen()
+      ),
     );
   }
 }

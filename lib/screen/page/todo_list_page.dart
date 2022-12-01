@@ -1,7 +1,10 @@
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../config/my_app.dart';
+import '../../provider/todo_provider.dart';
+import '../../vo/todo.dart';
 
 
 class TodoListPage extends StatefulWidget {
@@ -12,6 +15,14 @@ class TodoListPage extends StatefulWidget {
 }
 
 class _TodoListPageState extends State<TodoListPage> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Provider.of<TodoProvider>(context,listen: false).getAll();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -46,13 +57,29 @@ class _TodoListPageState extends State<TodoListPage> {
             Expanded(
               child: Container(
                 padding: EdgeInsets.only(top: 20),
-                child: Column(
-                  children: [
-                    TodoListBox(),
-                    TodoListBox(),
-                    TodoListBox(),
-                  ],
-                ),
+                child:Consumer<TodoProvider>(
+                  builder: (context, todoProvider, child){
+                    return Column(
+                      children: todoProvider.currentTodoList.map((e) => TodoListBox(
+                          title: e.title,
+                          type: e.type,
+                          isComplete: e.completeNy=='y' ? true : false,
+                          onTap: (){
+                            Provider.of<TodoProvider>(context,listen: false).updateComplete(todo: Todo(
+                              todoIdx: e.todoIdx,
+                              completeNy: 'y'
+                            ));
+
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text('${e.title} 성공'),
+                            ));
+
+                          },
+                        )
+                      ).toList(),
+                    );
+                  },
+                )
               ),
             )
           ],
@@ -64,6 +91,17 @@ class _TodoListPageState extends State<TodoListPage> {
 
 class TodoListBox extends StatelessWidget {
 
+  String type;
+  String title;
+  bool isComplete;
+  Function onTap;
+
+  TodoListBox({
+    required this.title,
+    required this.type,
+    required this.isComplete,
+    required this.onTap
+  });
 
   TextStyle titleStyle = TextStyle(color:appMainColor,fontFamily: 'noto_black',fontSize: 16);
   TextStyle contentStyle = TextStyle(color: Colors.black,fontSize: 14);
@@ -81,16 +119,19 @@ class TodoListBox extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('플러터 디자인',style: titleStyle,),
-              Text('플러터 디자인 차근 차근 공부하기',style: contentStyle,),
+              Text(type,style: titleStyle,),
+              Text(title,style: contentStyle,),
             ],
           ),
-          OutlinedButton(
-            onPressed: () {
-
-            },
-            child: const Text('완료'),
-          )
+          isComplete ?
+            const Text('완료됨',style: TextStyle(color: appMainColor,fontWeight: FontWeight.bold,fontSize: 16),)
+          :
+            OutlinedButton(
+              onPressed: () {
+                onTap();
+              },
+              child: const Text('완료'),
+            )
         ],
       ),
     );

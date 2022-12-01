@@ -47,12 +47,15 @@ class TodoProvider extends ChangeNotifier{
 
 
   Future<void> getAll() async{
+
     var requestUrl = 'http://3.36.28.140:8080/flutter_coding_boot/todo/all';
     Uri uri = Uri.parse(requestUrl);
 
 
     var response = await http.get(uri);
     if(response.body.isNotEmpty){
+      //todo currentTodoList=[] 로 초기화
+      currentTodoList=[];
       var jsonList = jsonDecode(utf8.decode(response.bodyBytes));
       for(int i=0;i<jsonList.length;i++){
         var json = jsonList[i];

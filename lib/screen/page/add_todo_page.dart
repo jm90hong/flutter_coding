@@ -53,7 +53,10 @@ class _AddTodoPageState extends State<AddTodoPage> {
                           child: Text(value)
                       )).toList(),
                       onChanged: (value){
-                        selectedValue=value!;
+                        setState((){
+                          selectedValue=value!;
+                        });
+
                       }
                   ),
                   SizedBox(height: 30,),
@@ -78,6 +81,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
               );
 
               await Provider.of<TodoProvider>(context,listen: false).add(todo: todo);
+              Provider.of<TodoProvider>(context,listen: false).getAll();
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                 content: Text("공부일정 등록완료"),
               ));
